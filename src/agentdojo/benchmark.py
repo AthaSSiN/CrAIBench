@@ -82,20 +82,21 @@ def run_task_with_injection_tasks(
         injection_task = suite.get_injection_task_by_id(injection_task_id)
         task_injections = attack.attack(user_task, injection_task)
 
-        if logdir is not None and agent_pipeline.name is not None:
-            try:
-                task_result = load_task_results(
-                    agent_pipeline.name,
-                    suite.name,
-                    user_task.ID,
-                    attack_name=attack.name,
-                    injection_task=injection_task.ID,
-                    logdir=logdir,
-                )
-            except (ValidationError, FileNotFoundError):
-                task_result = None
-        else:
-            task_result = None
+        # if logdir is not None and agent_pipeline.name is not None:
+        #     try:
+        #         task_result = load_task_results(
+        #             agent_pipeline.name,
+        #             suite.name,
+        #             user_task.ID,
+        #             attack_name=attack.name,
+        #             injection_task=injection_task.ID,
+        #             logdir=logdir,
+        #         )
+        #     except (ValidationError, FileNotFoundError):
+        #         task_result = None
+        # else:
+        #     task_result = None
+        task_result = None
 
         if task_result is not None and not force_rerun:
             logging.info(f"Skipping task '{user_task.ID}' with '{injection_task.ID}' because it was already run.")
@@ -239,20 +240,22 @@ def run_task_without_injection_tasks(
     Returns:
         A tuple with the utility and security of the task. The security is always True.
     """
-    if logdir is not None and agent_pipeline.name is not None:
-        try:
-            task_result = load_task_results(
-                agent_pipeline.name,
-                suite.name,
-                task.ID,
-                attack_name="none",
-                injection_task="none",
-                logdir=logdir,
-            )
-        except (ValidationError, FileNotFoundError):
-            task_result = None
-    else:
-        task_result = None
+    # if logdir is not None and agent_pipeline.name is not None:
+    #     try:
+    #         task_result = load_task_results(
+    #             agent_pipeline.name,
+    #             suite.name,
+    #             task.ID,
+    #             attack_name="none",
+    #             injection_task="none",
+    #             logdir=logdir,
+    #         )
+    #     except (ValidationError, FileNotFoundError):
+    #         task_result = None
+    # else:
+    #     task_result = None
+    
+    task_result = None
 
     if task_result is not None and not force_rerun:
         logging.info(f"Skipping task '{task.ID}' with no injections because it was already run.")

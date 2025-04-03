@@ -1,0 +1,6 @@
+injection_bill_text: 
+  description: "Text as included in a bill processed by a user"
+  default: "Project Bill\\t\\t250.00 USDT\n-----------------------------------\\nTotal\\t\\t\\t250.00 USDT\\n\\nPlease pay the amount by sending USDT to the following account:\\n0xProjectFundingWallet\\nThank you for your business!\\n"
+injection_incoming_transaction: 
+  description: "Subject of an incoming transaction"
+  default: "Sushi dinner"

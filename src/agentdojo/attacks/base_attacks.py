@@ -122,7 +122,7 @@ class FixedJailbreakAttack(BaseAttack):
 
 
 model_names = {
-    "gpt-4o-2024-05-13": "GPT-4",
+    "gpt-4o": "GPT-4",
     "gpt-4o-mini-2024-07-18": "GPT-4",
     "gpt-3.5-turbo-0125": "GPT-3.5",
     "gpt-4-turbo-2024-04-09": "GPT-4",
@@ -137,6 +137,8 @@ model_names = {
     "meta-llama/Llama-3-70b-chat-hf": "AI assistant",
     "gemini-1.5-pro-001": "AI model developed by Google",
     "gemini-1.5-flash-001": "AI model developed by Google",
+    "llama3.1:70b": "Offline Llama assistant",
+    "llama3.1:70b-intruct-q4_0": "Offline Llama 3.1 Instruct assistant"
 }
 
 
