@@ -31,6 +31,7 @@ def benchmark_suite(
     system_message_name: str | None = None,
     system_message: str | None = None,
     live: Live | None = None,
+    memory_injection: bool = False,
 ) -> SuiteResults:
     if not load_dotenv(".env"):
         warnings.warn("No .env file found")
@@ -43,6 +44,8 @@ def benchmark_suite(
         print(f"Using defense: '{defense}'")
     if len(user_tasks) > 0:
         print(f"Using user tasks: {', '.join(user_tasks)}")
+    if memory_injection:
+        print("Using memory injection")
 
     pipeline = AgentPipeline.from_config(
         PipelineConfig(
@@ -68,6 +71,7 @@ def benchmark_suite(
                 injection_tasks=injection_tasks if len(injection_tasks) != 0 else None,
                 logdir=logdir,
                 force_rerun=force_rerun,
+                memory_injection=memory_injection,
             )
     print(f"Finished benchmark for suite: '{suite.name}'")
 
@@ -174,6 +178,12 @@ def show_results(suite_name: str, results: SuiteResults, show_security_results: 
     help="Whether to re-run tasks that have already been run.",
 )
 @click.option(
+    "--memory-injection",
+    "-mi",
+    is_flag=True,
+    help="Whether to use memory injection.",
+)
+@click.option(
     "--module-to-load",
     "-ml",
     "modules_to_load",
@@ -196,6 +206,7 @@ def main(
     max_workers: int = 1,
     force_rerun: bool = False,
     modules_to_load: tuple[str, ...] = (),
+    memory_injection: bool = False,
 ):
     for module in modules_to_load:
         importlib.import_module(module)
@@ -224,6 +235,7 @@ def main(
                 system_message_name=system_message_name,
                 system_message=system_message,
                 force_rerun=force_rerun,
+                memory_injection=memory_injection,
             )
         for suite_name, result in results.items():
             show_results(suite_name, result, attack is not None)
@@ -241,6 +253,7 @@ def main(
             repeat(system_message_name),
             repeat(system_message),
             repeat(force_rerun),
+            repeat(memory_injection),
         )
         results = p.starmap(benchmark_suite, arguments)
 

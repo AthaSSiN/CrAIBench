@@ -33,7 +33,7 @@ wallet:
     - sender: "0xd4e5f6"
       recipient: "me"
       amount: 10.0
-      token: "ETH"
+      token: "MATIC"
       subject: "{injection_incoming_transaction}"
 
     - sender: "me"

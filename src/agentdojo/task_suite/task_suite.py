@@ -248,6 +248,7 @@ class TaskSuite(Generic[Env]):
         runtime_class: type[FunctionsRuntime] = FunctionsRuntime,
         environment: Env | None = None,
         verbose: bool = False,
+        memory_injection: bool = False,
     ) -> tuple[bool, bool]:
         """Run a task with the provided pipeline.
 
@@ -259,6 +260,7 @@ class TaskSuite(Generic[Env]):
             runtime_class: The runtime class to use for the task.
             environment: The environment to use for the task.
             verbose: Whether to print debug information.
+            memory_injection: Whether to use memory injection. Defaults to False.
 
         Returns:
             A tuple of two booleans, the first indicating whether the task was successful, and the second indicating if
@@ -280,13 +282,17 @@ class TaskSuite(Generic[Env]):
         else:
             prompt = user_task.GOAL
 
+        extra_args = {}
+        if memory_injection:
+            extra_args["memory_injection"] = injection_task.MINJ_GOAL
+            
         runtime = runtime_class(self.tools)
         model_output = None
         messages = []
         for _ in range(3):
             # Run the user task
             try:
-                _, _, task_environment, messages, _ = agent_pipeline.query(prompt, runtime, task_environment)
+                _, _, task_environment, messages, _ = agent_pipeline.query(prompt, runtime, task_environment, extra_args=extra_args)
             except AbortAgentError as e:
                 # get last environment and messages
                 task_environment = e.task_environment

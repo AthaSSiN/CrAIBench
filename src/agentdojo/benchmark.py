@@ -46,6 +46,7 @@ def run_task_with_injection_tasks(
     logdir: Path | None,
     force_rerun: bool,
     injection_tasks: Sequence[str] | None = None,
+    memory_injection: bool = False,
 ) -> tuple[dict[tuple[str, str], bool], dict[tuple[str, str], bool]]:
     """Runs the given user tasl with the given injection tasks (or all tasks if no injection
     task is provided) by injecting the environment by using the given attack.
@@ -59,6 +60,7 @@ def run_task_with_injection_tasks(
         force_rerun: Whether to force rerun the task in case in the logdir there already exists
             a log for the task.
         injection_tasks: The injection tasks to run. If None, all injection tasks in the suite will be run.
+        memory_injection: Whether to use memory injection. Defaults to False.
 
     Returns:
         A tuple of two dictionaries. The first dictionary contains the utility results for each injection
@@ -80,7 +82,9 @@ def run_task_with_injection_tasks(
 
     for injection_task_id in injection_tasks_to_run:
         injection_task = suite.get_injection_task_by_id(injection_task_id)
-        task_injections = attack.attack(user_task, injection_task)
+        task_injections = {}
+        if not memory_injection:
+            task_injections = attack.attack(user_task, injection_task)
 
         # if logdir is not None and agent_pipeline.name is not None:
         #     try:
@@ -111,10 +115,11 @@ def run_task_with_injection_tasks(
                 injections=task_injections,
                 attack_type=attack.name,
                 pipeline_name=agent_pipeline.name,
+                memory_injection=memory_injection,
             ) as logger:
                 try:
                     utility, security = suite.run_task_with_pipeline(
-                        agent_pipeline, user_task, injection_task, task_injections
+                        agent_pipeline, user_task, injection_task, task_injections, memory_injection=memory_injection
                     )
                 except BadRequestError as e:
                     if e.code == "context_length_exceeded" or e.param == "max_tokens":
@@ -161,6 +166,7 @@ def benchmark_suite_with_injections(
     user_tasks: Sequence[str] | None = None,
     injection_tasks: Sequence[str] | None = None,
     verbose: bool = True,
+    memory_injection: bool = False,
 ) -> SuiteResults:
     """Benchmark a suite with injections.
 
@@ -174,6 +180,7 @@ def benchmark_suite_with_injections(
         user_tasks: A subset of user tasks to run. If None, all user tasks are run.
         injection_tasks: A subset of injection tasks to run. If None, all injection tasks are run.
         verbose: Whether to print the results.
+        memory_injection: Whether to use memory injection. Defaults to False.
     """
     suite_utility_results: dict[tuple[str, str], bool] = {}
     suite_security_results: dict[tuple[str, str], bool] = {}
@@ -209,6 +216,7 @@ def benchmark_suite_with_injections(
             logdir,
             force_rerun,
             injection_tasks,
+            memory_injection,
         )
         suite_utility_results.update(utility)
         suite_security_results.update(security)

@@ -36,14 +36,13 @@ def getBalance(
 
 
 def getTransactions(
-    wallet: Annotated[Wallet, Depends("wallet")], n: int = 100
+    wallet: Annotated[Wallet, Depends("wallet")]
 ) -> list[Transaction]:
     """
     Get the most recent transactions in the wallet, e.g. to summarize the last n transactions.
 
-    :param n: Number of transactions to retrieve
     """
-    return wallet.transactions[-n:] if len(wallet.transactions) > n else wallet.transactions
+    return wallet.transactions
 
 
 def transfer(
@@ -133,6 +132,7 @@ def airdrop(
     """
     Request tokens from an airdrop.
 
+    :param address: Address of the recipient
     :param symbol: Symbol of the token to request
     :param amount: Amount of tokens to mint into wallet
     """
@@ -152,6 +152,7 @@ def deploy_token_contract(
     """
     Deploy a new token contract.
 
+    :param owner: Address of the owner of the token
     :param token_name: Name of the new token
     :param symbol: Symbol of the new token
     :param initial_supply: Initial supply to mint

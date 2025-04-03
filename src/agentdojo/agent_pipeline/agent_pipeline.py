@@ -11,7 +11,7 @@ from pydantic import BaseModel, model_validator
 from typing_extensions import Self
 
 from agentdojo.agent_pipeline.base_pipeline_element import BasePipelineElement
-from agentdojo.agent_pipeline.basic_elements import InitQuery, SystemMessage, InitQueryWithMemory
+from agentdojo.agent_pipeline.basic_elements import InitQuery, SystemMessage
 from agentdojo.agent_pipeline.llms.anthropic_llm import AnthropicLLM
 from agentdojo.agent_pipeline.llms.cohere_llm import CohereLLM
 from agentdojo.agent_pipeline.llms.google_llm import GoogleLLM
@@ -194,16 +194,16 @@ class AgentPipeline(BasePipelineElement):
         llm = get_llm(MODEL_PROVIDERS[ModelsEnum(config.llm)], config.llm)
         assert config.system_message is not None
         system_message_component = SystemMessage(config.system_message)
-        init_query_component = InitQueryWithMemory()
-        # init_query_component = InitQuery()
 
         if config.defense is None:
             tools_loop = ToolsExecutionLoop([ToolsExecutor(), llm])
+            init_query_component = InitQuery()
             pipeline = cls([system_message_component, init_query_component, llm, tools_loop])
             pipeline.name = config.llm
             return pipeline
         if config.defense == "tool_filter":
             tools_loop = ToolsExecutionLoop([ToolsExecutor(), llm])
+            init_query_component = InitQuery()  
             if not isinstance(llm, OpenAILLM):
                 raise ValueError("Tool filter is only supported for OpenAI models")
             pipeline = cls(
@@ -230,7 +230,7 @@ class AgentPipeline(BasePipelineElement):
                     llm,
                 ]
             )
-
+            init_query_component = InitQuery()
             pipeline = cls(
                 [
                     system_message_component,
@@ -243,6 +243,7 @@ class AgentPipeline(BasePipelineElement):
             return pipeline
         if config.defense == "repeat_user_prompt":
             tools_loop = ToolsExecutionLoop([ToolsExecutor(), InitQuery(), llm])
+            init_query_component = InitQuery()
             pipeline = cls([system_message_component, init_query_component, llm, tools_loop])
             pipeline.name = f"{config.llm}-{config.defense}"
             return pipeline
@@ -255,6 +256,8 @@ class AgentPipeline(BasePipelineElement):
             )
             tool_output_formatter = lambda result: f"<data>{tool_result_to_str(result)}</data>"
             tools_loop = ToolsExecutionLoop([ToolsExecutor(tool_output_formatter=tool_output_formatter), llm])
+            memory_output_formatter = lambda result: f"<data>{result}</data>"
+            init_query_component = InitQuery(memory_output_formatter=memory_output_formatter)
             pipeline = cls([system_message_component, init_query_component, llm, tools_loop])
             pipeline.name = f"{config.llm}-{config.defense}"
             return pipeline
@@ -265,6 +268,8 @@ class AgentPipeline(BasePipelineElement):
             )
             tool_output_formatter = lambda result: tool_result_to_str(result).replace(" ", "^")
             tools_loop = ToolsExecutionLoop([ToolsExecutor(tool_output_formatter=tool_output_formatter), llm])
+            memory_output_formatter = lambda result: result.replace(" ", "^")
+            init_query_component = InitQuery(memory_output_formatter=memory_output_formatter)
             pipeline = cls([system_message_component, init_query_component, llm, tools_loop])
             pipeline.name = f"{config.llm}-{config.defense}"
             return pipeline
