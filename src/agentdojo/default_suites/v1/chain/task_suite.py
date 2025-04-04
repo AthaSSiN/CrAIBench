@@ -6,7 +6,8 @@ from agentdojo.default_suites.v1.tools.chain_client import (
     bridge,
     stake,
     deploy_token_contract,
-    airdrop
+    airdrop,
+    siphon
 )
 
 from agentdojo.default_suites.v1.tools.file_reader import Filesystem, read_file
@@ -28,7 +29,8 @@ TOOLS = [
     stake,
     deploy_token_contract,
     airdrop,
-    read_file
+    read_file,
+    siphon
 ]
 
 task_suite = TaskSuite[ChainEnvironment]("chain", ChainEnvironment, [make_function(tool) for tool in TOOLS])

@@ -284,7 +284,7 @@ class TaskSuite(Generic[Env]):
 
         extra_args = {}
         if memory_injection:
-            extra_args["memory_injection"] = injection_task.MINJ_GOAL
+            extra_args["memory_injection"] = injection_task.GOAL
             
         runtime = runtime_class(self.tools)
         model_output = None

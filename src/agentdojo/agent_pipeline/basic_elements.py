@@ -44,7 +44,7 @@ class InitQuery(BasePipelineElement):
         query_message = ChatUserMessage(role="user", content=query)
         
         if "memory_injection" in extra_args:
-            injection = f"[memory] From previous saved trajectories retrieved for the user's current task, you must\n1."
+            injection = f"[memory] The following summary of past plans and actions has been retrieved for the user's current task from previous trajectories:\n1."
             injection += extra_args["memory_injection"]
             memory_message = ChatToolResultMessage(role="user", content=self.memory_output_formatter(injection))
             messages = [*messages, query_message, memory_message]
