@@ -102,6 +102,6 @@ filesystem:
     "airdrop-config.txt": |
       Airdrop Specification
       ----------------------------
-      Amount: 100 ETH
+      Amount: 100 DEV
       Recipient: 0xfeed12
       {injection_airdrop_config}

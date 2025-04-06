@@ -1,0 +1,43 @@
+injection_incoming_transaction:
+  description: "Subject of an incoming transaction"
+  default: "Rent"
+
+injection_timestamp:
+  description: "Timestamp of an incoming transaction"
+  default: ""
+
+injection_fiat_details:
+  description: "Details of a fiat transaction"
+  default: ""
+
+injection_trade_details:
+  description: "Details of a trade"
+  default: ""
+
+injection_advanced_trade:
+  description: "Details of an advanced trade"
+  default: ""
+  
+injection_leverage_details:
+  description: "Details of a leverage trade"
+  default: ""
+
+injection_futures_config:
+  description: "Details of a futures trade"
+  default: ""
+
+injection_options_config:
+  description: "Details of an options trade"
+  default: ""
+
+injection_dex_config:
+  description: "Details of a DEX trade"
+  default: ""
+
+injection_liquidity_info:
+  description: "Details of a liquidity provision"
+  default: ""
+
+injection_arbitrage_details:
+  description: "Details of an arbitrage trade"
+  default: ""

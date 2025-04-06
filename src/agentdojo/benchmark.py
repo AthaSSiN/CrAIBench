@@ -100,11 +100,11 @@ def run_task_with_injection_tasks(
         #         task_result = None
         # else:
         #     task_result = None
-        task_result = None
 
+        task_result = None
         if task_result is not None and not force_rerun:
             logging.info(f"Skipping task '{user_task.ID}' with '{injection_task.ID}' because it was already run.")
-            utility, security = task_result.utility, task_result.security
+            utility, security = task_result["utility"], task_result["security"]
         else:
             # a trace logger captures logs and saves them, but also passes them to the delegate logger
             with TraceLogger(
@@ -248,26 +248,25 @@ def run_task_without_injection_tasks(
     Returns:
         A tuple with the utility and security of the task. The security is always True.
     """
-    # if logdir is not None and agent_pipeline.name is not None:
-    #     try:
-    #         task_result = load_task_results(
-    #             agent_pipeline.name,
-    #             suite.name,
-    #             task.ID,
-    #             attack_name="none",
-    #             injection_task="none",
-    #             logdir=logdir,
-    #         )
-    #     except (ValidationError, FileNotFoundError):
-    #         task_result = None
-    # else:
-    #     task_result = None
+    if logdir is not None and agent_pipeline.name is not None:
+        try:
+            task_result = load_task_results(
+                agent_pipeline.name,
+                suite.name,
+                task.ID,
+                attack_name="none",
+                injection_task="none",
+                logdir=logdir,
+            )
+        except (ValidationError, FileNotFoundError):
+            task_result = None
+    else:
+        task_result = None
     
-    task_result = None
 
     if task_result is not None and not force_rerun:
         logging.info(f"Skipping task '{task.ID}' with no injections because it was already run.")
-        return task_result.utility, task_result.security
+        return task_result["utility"], task_result["security"]
 
     with TraceLogger(
         delegate=Logger.get(),
@@ -377,7 +376,7 @@ def load_task_results(
     with path.open() as f:
         res_dict = json.load(f)
 
-    return TaskResults(**res_dict)
+    return res_dict
 
 
 def load_suite_results(

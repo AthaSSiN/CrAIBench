@@ -82,13 +82,13 @@ if [ ${#USER_TASKS[@]} -eq 0 ]; then
   if $MI_FLAG; then
     # Run all user tasks 0–31
     USER_TASKS=()
-    for i in $(seq 19 31); do
+    for i in $(seq 0 31); do
       USER_TASKS+=("user_task_$i")
     done
   else
     # Run only user tasks 0–24 (skip single-step tasks 25–31)
     USER_TASKS=()
-    for i in $(seq 4 24); do
+    for i in $(seq 0 24); do
       USER_TASKS+=("user_task_$i")
     done
   fi
@@ -97,11 +97,20 @@ fi
 # Loop through user tasks
 for UT in "${USER_TASKS[@]}"; do
   USER_TASK_NUM="${UT##*_}"
+  run user task
+  CMD="$SCRIPT -s chain -ut $UT --model $MODEL --system-message-name $SYSTEM_MSG ${OTHER_ARGS[*]}"
+  echo "Running: $CMD"
+  eval $CMD
 
   if $MI_FLAG; then
     IFS=' ' read -r -a ITS <<< "${injection_map[$USER_TASK_NUM]}"
     for IT in "${ITS[@]}"; do
+      echo Running with MI
       CMD="$SCRIPT -s chain -ut $UT -it $IT --model $MODEL --defense $DEFENSE --system-message-name $SYSTEM_MSG --attack $ATTACK -mi ${OTHER_ARGS[*]}"
+      echo "Running: $CMD"
+      eval $CMD
+      echo Running with PI
+      CMD="$SCRIPT -s chain -ut $UT -it $IT --model $MODEL --defense $DEFENSE --system-message-name $SYSTEM_MSG --attack $ATTACK ${OTHER_ARGS[*]}"
       echo "Running: $CMD"
       eval $CMD
     done
