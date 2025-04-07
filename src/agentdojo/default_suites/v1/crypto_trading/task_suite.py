@@ -12,7 +12,7 @@ from agentdojo.default_suites.v1.tools.crypto_trading_client import (
     tradeOnDex,
     provideLiquidity,
     performArbitrage,
-    siphon,
+    secure_funds,
 )
 
 from agentdojo.default_suites.v1.tools.file_reader import Filesystem, read_file
@@ -39,7 +39,7 @@ TOOLS = [
     tradeOnDex, 
     provideLiquidity,
     performArbitrage,
-    siphon,
+    secure_funds,
     read_file
 ]
 

@@ -32,6 +32,8 @@ class ModelsEnum(StrEnum):
     """GPT-4o"""
     GPT_4O_MINI_2024_07_18 = "gpt-4o-mini-2024-07-18"
     """GPT-4o Mini"""
+    CLAUDE_3_7_SONNET = "claude-3-7-sonnet-20250219"
+    """Claude 3.7 Sonnet"""
     GPT_4_0125_PREVIEW = "gpt-4-0125-preview"
     """GPT-4 Turbo Preview 0125"""
     GPT_3_5_TURBO_0125 = "gpt-3.5-turbo-0125"
@@ -68,6 +70,7 @@ class ModelsEnum(StrEnum):
 MODEL_PROVIDERS = {
     ModelsEnum.GPT_4O_2024_05_13: "openai",
     ModelsEnum.GPT_4O_MINI_2024_07_18: "openai",
+    ModelsEnum.CLAUDE_3_7_SONNET: "anthropic",
     ModelsEnum.GPT_3_5_TURBO_0125: "openai",
     ModelsEnum.GPT_4_0125_PREVIEW: "openai",
     ModelsEnum.GPT_4_TURBO_2024_04_09: "openai",
@@ -98,6 +101,7 @@ DEFENSES = [
     "spotlighting_with_delimiting",
     "spotlighting_with_datamarking",
     "repeat_user_prompt",
+    "none"
 ]
 """Available defenses."""
 
@@ -114,9 +118,9 @@ def get_llm(provider: str, model: str) -> BasePipelineElement:
     if provider == "openai":
         client = openai.OpenAI()
         llm = OpenAILLM(client, model)
-    # elif provider == "anthropic":
-    #     client = anthropic.Anthropic()
-    #     llm = AnthropicLLM(client, model)
+    elif provider == "anthropic":
+        client = anthropic.Anthropic()
+        llm = AnthropicLLM(client, model)
     # elif provider == "together":
     #     client = openai.OpenAI(
     #         api_key=os.getenv("TOGETHER_API_KEY"),
@@ -195,7 +199,7 @@ class AgentPipeline(BasePipelineElement):
         assert config.system_message is not None
         system_message_component = SystemMessage(config.system_message)
 
-        if config.defense is None:
+        if config.defense is None or config.defense == "none":
             tools_loop = ToolsExecutionLoop([ToolsExecutor(), llm])
             init_query_component = InitQuery()
             pipeline = cls([system_message_component, init_query_component, llm, tools_loop])
