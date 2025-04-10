@@ -60,6 +60,7 @@ def benchmark_suite(
                 user_tasks=user_tasks if len(user_tasks) != 0 else None,
                 logdir=logdir,
                 force_rerun=force_rerun,
+                system_message_name=system_message_name,
             )
         else:
             attacker_ = load_attack(attack, suite, pipeline)
@@ -72,6 +73,7 @@ def benchmark_suite(
                 logdir=logdir,
                 force_rerun=force_rerun,
                 memory_injection=memory_injection,
+                system_message_name=system_message_name,
             )
     print(f"Finished benchmark for suite: '{suite.name}'")
 

@@ -47,6 +47,7 @@ def run_task_with_injection_tasks(
     force_rerun: bool,
     injection_tasks: Sequence[str] | None = None,
     memory_injection: bool = False,
+    system_message_name: str | None = None,
 ) -> tuple[dict[tuple[str, str], bool], dict[tuple[str, str], bool]]:
     """Runs the given user tasl with the given injection tasks (or all tasks if no injection
     task is provided) by injecting the environment by using the given attack.
@@ -86,22 +87,22 @@ def run_task_with_injection_tasks(
         if not memory_injection:
             task_injections = attack.attack(user_task, injection_task)
 
-        # if logdir is not None and agent_pipeline.name is not None:
-        #     try:
-        #         task_result = load_task_results(
-        #             agent_pipeline.name,
-        #             suite.name,
-        #             user_task.ID,
-        #             attack_name=attack.name,
-        #             injection_task=injection_task.ID,
-        #             logdir=logdir,
-        #         )
-        #     except (ValidationError, FileNotFoundError):
-        #         task_result = None
-        # else:
-        #     task_result = None
+        if logdir is not None and agent_pipeline.name is not None:
+            try:
+                task_result = load_task_results(
+                    agent_pipeline.name,
+                    suite.name,
+                    user_task.ID,
+                    attack_name=attack.name,
+                    injection_task=injection_task.ID,
+                    logdir=logdir,
+                )
+            except (ValidationError, FileNotFoundError):
+                task_result = None
+        else:
+            task_result = None
 
-        task_result = None
+        # task_result = None
         if task_result is not None and not force_rerun:
             logging.info(f"Skipping task '{user_task.ID}' with '{injection_task.ID}' because it was already run.")
             utility, security = task_result["utility"], task_result["security"]
@@ -116,6 +117,7 @@ def run_task_with_injection_tasks(
                 attack_type=attack.name,
                 pipeline_name=agent_pipeline.name,
                 memory_injection=memory_injection,
+                system_message_name=system_message_name,
             ) as logger:
                 try:
                     utility, security = suite.run_task_with_pipeline(
@@ -167,6 +169,7 @@ def benchmark_suite_with_injections(
     injection_tasks: Sequence[str] | None = None,
     verbose: bool = True,
     memory_injection: bool = False,
+    system_message_name: str | None = None,
 ) -> SuiteResults:
     """Benchmark a suite with injections.
 
@@ -199,13 +202,13 @@ def benchmark_suite_with_injections(
         injection_tasks_to_run = suite.injection_tasks
 
     injection_tasks_utility_results = {}
-    if not attack.is_dos_attack:
-        for injection_task_id, injection_task in injection_tasks_to_run.items():
-            successful, _ = run_task_without_injection_tasks(suite, agent_pipeline, injection_task, logdir, force_rerun)
-            injection_tasks_utility_results[injection_task_id] = successful
+    # if not attack.is_dos_attack:
+    #     for injection_task_id, injection_task in injection_tasks_to_run.items():
+    #         successful, _ = run_task_without_injection_tasks(suite, agent_pipeline, injection_task, logdir, force_rerun, system_message_name)
+    #         injection_tasks_utility_results[injection_task_id] = successful
 
-        if not all(injection_tasks_utility_results.values()):
-            warnings.warn("Not all injection tasks were solved as user tasks.")
+    #     if not all(injection_tasks_utility_results.values()):
+    #         warnings.warn("Not all injection tasks were solved as user tasks.")
 
     for user_task in user_tasks_to_run:
         utility, security = run_task_with_injection_tasks(
@@ -217,6 +220,7 @@ def benchmark_suite_with_injections(
             force_rerun,
             injection_tasks,
             memory_injection,
+            system_message_name,
         )
         suite_utility_results.update(utility)
         suite_security_results.update(security)
@@ -234,6 +238,7 @@ def run_task_without_injection_tasks(
     task: BaseUserTask | BaseInjectionTask,
     logdir: Path | None,
     force_rerun: bool,
+    system_message_name: str | None = None,
 ) -> tuple[bool, bool]:
     """Run a task without injections. Useful to benchmark the utility of a pipeline.
 
@@ -276,6 +281,7 @@ def run_task_without_injection_tasks(
         injections={},
         attack_type="none",
         pipeline_name=agent_pipeline.name,
+        system_message_name=system_message_name,
     ) as logger:
         try:
             utility, security = suite.run_task_with_pipeline(agent_pipeline, task, injection_task=None, injections={})
@@ -309,6 +315,7 @@ def benchmark_suite_without_injections(
     logdir: Path | None,
     force_rerun: bool,
     user_tasks: Sequence[str] | None = None,
+    system_message_name: str | None = None,
 ) -> SuiteResults:
     """Benchmark a suite without injections.
 
@@ -331,7 +338,7 @@ def benchmark_suite_without_injections(
         user_tasks_to_run = suite.user_tasks.values()
 
     for user_task in user_tasks_to_run:
-        utility, security = run_task_without_injection_tasks(suite, agent_pipeline, user_task, logdir, force_rerun)
+        utility, security = run_task_without_injection_tasks(suite, agent_pipeline, user_task, logdir, force_rerun, system_message_name)
         suite_utility_results[(user_task.ID, "")] = utility
         suite_security_results[(user_task.ID, "")] = security
 

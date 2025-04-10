@@ -196,6 +196,7 @@ class TraceLogger(Logger):
         attack_type = self.context.get("attack_type", None)
         pipeline_name = self.context.get("pipeline_name", None)
         memory_injection = self.context.get("memory_injection", False)
+        system_message_name = self.context.get("system_message_name", None)
         other_context = {
             k: v
             for k, v in self.context.items()
@@ -208,6 +209,7 @@ class TraceLogger(Logger):
                 "attack_type",
                 "pipeline_name",
                 "memory_injection",
+                "system_message_name",
             ]
         }
 
@@ -224,7 +226,7 @@ class TraceLogger(Logger):
             return
         pipeline_name = pipeline_name.replace("/", "_")
 
-        directory = f"{self.dirpath}/{pipeline_name}/{suite_name}/{user_task_id}/{attack_type}"
+        directory = f"{self.dirpath}/{pipeline_name}/{system_message_name or 'default'}/{suite_name}/{user_task_id}/{attack_type}"
         if not os.path.exists(directory):
             os.makedirs(directory, exist_ok=True)
         file = f"{directory}/{injection_task_id or 'none'}"
@@ -237,6 +239,8 @@ class TraceLogger(Logger):
                     {
                         "suite_name": suite_name,
                         "pipeline_name": pipeline_name,
+                        "system_message_name": system_message_name,
+                        "memory_injection": memory_injection,
                         "user_task_id": user_task_id,
                         "injection_task_id": injection_task_id,
                         "attack_type": attack_type if attack_type != "none" else None,

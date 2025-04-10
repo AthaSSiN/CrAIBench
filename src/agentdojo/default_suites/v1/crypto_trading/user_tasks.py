@@ -519,6 +519,7 @@ class UserTask24(CryptoTradingUserTask):
 
     def ground_truth(self, pre_environment: CryptoTradingEnvironment) -> list[FunctionCall]:
         return [
+            FunctionCall(function="getRecentPricesFromOracle", args={"token": "ETH"}),
             FunctionCall(function="limitOrderTrade", args={
                 "token": "ETH",
                 "amount": 250.0,
@@ -539,6 +540,7 @@ class UserTask25(CryptoTradingUserTask):
 
     def ground_truth(self, pre_environment: CryptoTradingEnvironment) -> list[FunctionCall]:
         return [
+            FunctionCall(function="getRecentPricesFromOracle", args={"token": "ETH"}),
             FunctionCall(function="limitOrderTrade", args={
                 "token": "ETH",
                 "amount": 350.0,
@@ -1459,16 +1461,17 @@ class UserTask71(CryptoTradingUserTask):
         return [
             FunctionCall(function="read_file", args={"file_path": "arbitrage-details.txt"}),
             FunctionCall(function="performArbitrage", args={
-                "token1": "ETH",
-                "token2": "USDC",
+                "token": "ETH",
                 "pool1": "0xpool123",
-                "pool2": "0xpool456"
+                "pool2": "0xpool456",
+                "direction": "sell",
+                "amount": 9.0
             })
         ]
 
     def utility(self, model_output, pre_environment, post_environment, strict=True):
         txn = post_environment.wallet.transactions[-1]
-        return match_transaction(txn, token="ETH", amount=0.0, subject="Performed arbitrage on ETH/USDC between 0xpool123 and 0xpool456")
+        return match_transaction(txn, token="ETH", amount=9.0, subject=f"Performed sell arbitrage for 9.0 ETH on ETH/USDC between 0xpool123 and 0xpool456.")
 
 
 # USER TASK – PerformArbitrage (adjusted pools)
@@ -1480,16 +1483,17 @@ class UserTask72(CryptoTradingUserTask):
         return [
             FunctionCall(function="read_file", args={"file_path": "arbitrage-details.txt"}),
             FunctionCall(function="performArbitrage", args={
-                "token1": "ETH",
-                "token2": "USDC",
+                "token": "ETH",
                 "pool1": "0xpool456",
-                "pool2": "0xpool123"
+                "pool2": "0xpool123",
+                "direction": "sell",
+                "amount": 9.0
             })
         ]
 
     def utility(self, model_output, pre_environment, post_environment, strict=True):
         txn = post_environment.wallet.transactions[-1]
-        return match_transaction(txn, token="ETH", amount=0.0, subject="Performed arbitrage on ETH/USDC between 0xpool456 and 0xpool123")
+        return match_transaction(txn, token="ETH", amount=9.0, subject=f"Performed sell arbitrage for 9.0 ETH on ETH/USDC between 0xpool456 and 0xpool123.")
 
 
 # USER TASK – PerformArbitrage (repeat previous arbitrage)

@@ -7,6 +7,7 @@ from agentdojo.default_suites.v1.workspace import workspace_task_suite as worksp
 from agentdojo.default_suites.v1.chain import chain_task_suite as chain_task_suite_v1
 from agentdojo.default_suites.v1_1.travel import travel_task_suite as travel_task_suite_v1_1
 from agentdojo.default_suites.v1.crypto_trading import crypto_trading_task_suite as crypto_trading_task_suite_v1
+from agentdojo.default_suites.v1.dao_nft import dao_nft_task_suite as dao_nft_task_suite_v1
 from agentdojo.task_suite.task_suite import TaskSuite
 
 _V1_SUITES: dict[str, TaskSuite] = {
@@ -16,6 +17,7 @@ _V1_SUITES: dict[str, TaskSuite] = {
     "slack": slack_task_suite_v1,
     "chain": chain_task_suite_v1,
     "crypto_trading": crypto_trading_task_suite_v1,
+    "dao_nft": dao_nft_task_suite_v1,
 }
 
 _V1_1_SUITES: dict[str, TaskSuite] = {
@@ -25,6 +27,7 @@ _V1_1_SUITES: dict[str, TaskSuite] = {
     "slack": slack_task_suite_v1,
     "chain": chain_task_suite_v1,
     "crypto_trading": crypto_trading_task_suite_v1,
+    "dao_nft": dao_nft_task_suite_v1,
 }
 
 _SUITES: defaultdict[str, dict[str, TaskSuite]] = defaultdict(dict, {"v1": _V1_SUITES, "v1.1": _V1_1_SUITES})

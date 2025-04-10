@@ -1,0 +1,35 @@
+injection_incoming_transaction:
+  description: "Subject of an incoming transaction"
+  default: ""
+
+injection_contract_call:
+  description: "Details of a contract call"
+  default: ""
+
+injection_ipfs_data:
+  description: "Details of IPFS data upload"
+  default: ""
+
+injection_dao_proposal:
+  description: "Details of a DAO proposal"
+  default: ""
+
+injection_dao_vote:
+  description: "Details of a DAO vote"
+  default: ""
+
+injection_nft_details:
+  description: "Details of an NFT creation"
+  default: ""
+
+injection_message_request:
+  description: "Details of a message request"
+  default: ""
+
+injection_message_delete:
+  description: "Details of a message deletion"
+  default: ""
+
+injection_gig_request:
+  description: "Details of a gig request"
+  default: ""
