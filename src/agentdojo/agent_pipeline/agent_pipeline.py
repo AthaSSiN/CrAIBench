@@ -67,6 +67,22 @@ class ModelsEnum(StrEnum):
     """Llama 3.1 Instruct Offline (4bit quantized)"""
     LLAMA_3_1_70b_INSTRUCT_OFFLINE = "llama3.1:70b-instruct-fp16"
     """Llama 3.1 Instruct Offline (fp16)"""
+    LLAMA_3_1_8b_INSTRUCT_fp16_OFFLINE = "llama3.1:8b-instruct-fp16"
+    LLAMA_3_3_70b_INSTRUCT_OFFLINE = "llama3.3:70b-instruct-fp16"
+    QWEN_2_5_7b_INSTRUCT_fp16_OFFLINE = "qwen2.5:7b-instruct-fp16"
+    QWEN_2_5_14b_INSTRUCT_fp16_OFFLINE = "qwen2.5:14b-instruct-fp16"
+    QWEN_2_5_32b_INSTRUCT_fp16_OFFLINE = "qwen2.5:32b-instruct-fp16"
+    DEEPSEEK_R1_TOOL_CALLING_7b_OFFLINE = "MFDoom/deepseek-r1-tool-calling:7b"
+    DEEPSEEK_R1_TOOL_CALLING_14b_OFFLINE = "MFDoom/deepseek-r1-tool-calling:14b"
+    LLAMA_3_GROQ_TOOL_USE_8b_FP16_OFFLINE = "llama3-groq-tool-use:8b-fp16"
+    NEMOTRON_MINI_4B_INSTRUCT_FP16 = "nemotron-mini:4b-instruct-fp16"
+    MFDOOM_DEEPSEEK_R1_TOOL_CALLING_14B_QWEN_DISTILL_FP16 = "MFDoom/deepseek-r1-tool-calling:14b-qwen-distill-fp16"
+    MADEAGENTS_HAMMER2_1_1_5B = "MadeAgents/Hammer2.1-1.5b"
+    MADEAGENTS_HAMMER2_1_7B = "MadeAgents/Hammer2.1-7b"
+    FC1 = "fc1"
+    FC2 = "fc2"
+    FC3 = "fc3"
+    FC4 = "fc4"
 
 
 MODEL_PROVIDERS = {
@@ -90,6 +106,22 @@ MODEL_PROVIDERS = {
     ModelsEnum.LLAMA_3_1_70b_OFFLINE: "offline",
     ModelsEnum.LLAMA_3_1_70b_INSTRUCT_OFFLINE: "offline",
     ModelsEnum.LLAMA_3_1_70b_INSTRUCT_4bit_OFFLINE: "offline",
+    ModelsEnum.LLAMA_3_1_8b_INSTRUCT_fp16_OFFLINE: "offline",
+    ModelsEnum.LLAMA_3_3_70b_INSTRUCT_OFFLINE: "offline",
+    ModelsEnum.QWEN_2_5_7b_INSTRUCT_fp16_OFFLINE: "offline",
+    ModelsEnum.QWEN_2_5_14b_INSTRUCT_fp16_OFFLINE: "offline",
+    ModelsEnum.QWEN_2_5_32b_INSTRUCT_fp16_OFFLINE: "offline",
+    ModelsEnum.DEEPSEEK_R1_TOOL_CALLING_7b_OFFLINE: "offline",
+    ModelsEnum.DEEPSEEK_R1_TOOL_CALLING_14b_OFFLINE: "offline",
+    ModelsEnum.LLAMA_3_GROQ_TOOL_USE_8b_FP16_OFFLINE: "offline",
+    ModelsEnum.NEMOTRON_MINI_4B_INSTRUCT_FP16: "offline",
+    ModelsEnum.MFDOOM_DEEPSEEK_R1_TOOL_CALLING_14B_QWEN_DISTILL_FP16: "offline",
+    ModelsEnum.MADEAGENTS_HAMMER2_1_1_5B: "vllm",
+    ModelsEnum.MADEAGENTS_HAMMER2_1_7B: "vllm",
+    ModelsEnum.FC1: "vllm",
+    ModelsEnum.FC2: "vllm",
+    ModelsEnum.FC3: "vllm",
+    ModelsEnum.FC4: "vllm",
 }
 
 TOOL_FILTER_PROMPT = (
@@ -146,6 +178,10 @@ def get_llm(provider: str, model: str) -> BasePipelineElement:
        client = openai.OpenAI(base_url='http://localhost:11434/v1/',
                               api_key='ollama')
        llm = OpenAILLM(client, model)
+    elif provider == "vllm":
+        client = openai.OpenAI(base_url='http://localhost:8000/v1/',
+                              api_key='vllm')
+        llm = OpenAILLM(client, model)
     else:
         raise ValueError("Invalid provider")
     return llm

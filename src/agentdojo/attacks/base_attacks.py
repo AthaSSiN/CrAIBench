@@ -140,7 +140,23 @@ model_names = {
     "gemini-1.5-pro-001": "AI model developed by Google",
     "gemini-1.5-flash-001": "AI model developed by Google",
     "llama3.1:70b": "Offline Llama assistant",
-    "llama3.1:70b-intruct-q4_0": "Offline Llama 3.1 Instruct assistant"
+    "llama3.1:70b-intruct-q4_0": "Offline Llama 3.1 Instruct assistant",
+    "llama3.1:8b-instruct-fp16": "Offline Llama assistant",
+    "llama3.3:70b-instruct-fp16": "Offline Llama 3.3 Instruct assistant",
+    "qwen2.5:7b-instruct-fp16": "Offline qwen Instruct assistant",
+    "qwen2.5:14b-instruct-fp16": "Offline qwen Instruct assistant",
+    "qwen2.5:32b-instruct-fp16": "Offline qwen Instruct assistant",
+    "MFDoom/deepseek-r1-tool-calling:7b": "r1 tool calling",
+    "MFDoom/deepseek-r1-tool-calling:14b": "r1 tool calling",
+    "llama3-groq-tool-use:8b-fp16": "llama groq tool use",
+    "nemotron-mini:4b-instruct-fp16":"offline",
+    "MFDoom/deepseek-r1-tool-calling:14b-qwen-distill-fp16":"offline",
+    "MadeAgents/Hammer2.1-1.5b":"vllm",
+    "MadeAgents/Hammer2.1-7b":"vllm",
+    "fc1":"vllm",
+    "fc2":"vllm",
+    "fc3":"vllm",
+    "fc4":"vllm",
 }
 
 

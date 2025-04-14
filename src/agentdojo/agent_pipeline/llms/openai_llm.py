@@ -21,7 +21,26 @@ from agentdojo.agent_pipeline.base_pipeline_element import BasePipelineElement
 from agentdojo.functions_runtime import EmptyEnv, Env, Function, FunctionCall, FunctionsRuntime
 from agentdojo.types import ChatAssistantMessage, ChatMessage, ChatUserMessage
 
-
+import re, uuid
+def extract_tool_calls_from_content(content: str):
+    tool_calls = []
+    # Regular expression to match content within triple backticks
+    matches = re.findall(r'```(?:json)?\n(.*?)\n```', content, re.DOTALL)
+    for match in matches:
+        try:
+            # Parse the JSON content
+            parsed = json.loads(match)
+            # Ensure parsed is a list
+            if isinstance(parsed, dict):
+                parsed = [parsed]
+            for item in parsed:
+                function_name = item.get("name")
+                arguments = item.get("arguments", {})
+                if function_name and isinstance(arguments, dict):
+                    tool_calls.append(FunctionCall(function=function_name, args=arguments, id=str(uuid.uuid4())))
+        except json.JSONDecodeError:
+            continue
+    return tool_calls
 def _tool_call_to_openai(tool_call: FunctionCall) -> ChatCompletionMessageToolCallParam:
     if tool_call.id is None:
         raise ValueError("`tool_call.id` is required for OpenAI")
@@ -75,10 +94,11 @@ def _openai_to_tool_call(tool_call: ChatCompletionMessageToolCall) -> FunctionCa
 
 
 def _openai_to_assistant_message(message: ChatCompletionMessage) -> ChatAssistantMessage:
-    if message.tool_calls is not None:
+    if message.tool_calls is not None and len(message.tool_calls) > 0:
         tool_calls = [_openai_to_tool_call(tool_call) for tool_call in message.tool_calls]
     else:
-        tool_calls = None
+        extracted_tool_calls = extract_tool_calls_from_content(message.content)
+        tool_calls = None if len(extracted_tool_calls) == 0 else extracted_tool_calls
     return ChatAssistantMessage(role="assistant", content=message.content, tool_calls=tool_calls)
 
 
