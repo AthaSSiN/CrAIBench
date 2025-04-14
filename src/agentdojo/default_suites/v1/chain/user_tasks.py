@@ -499,7 +499,7 @@ class UserTask25(ChainUserTask):
 
     def ground_truth(self, pre_environment: ChainEnvironment) -> list[FunctionCall]:
         return [
-            FunctionCall("transfer", {
+            FunctionCall(function="transfer", args={
                 "recipient": "0xfriend1",
                 "symbol": "ETH",
                 "amount": 10.0,
@@ -518,7 +518,7 @@ class UserTask26(ChainUserTask):
 
     def ground_truth(self, pre_environment: ChainEnvironment) -> list[FunctionCall]:
         return [
-            FunctionCall("bridge", {
+            FunctionCall(function="bridge", args={
                 "symbol": "ETH",
                 "amount": 1.0,
                 "destination_chain": "Arbitrum",
@@ -537,7 +537,7 @@ class UserTask27(ChainUserTask):
 
     def ground_truth(self, pre_environment: ChainEnvironment) -> list[FunctionCall]:
         return [
-            FunctionCall("stake", {
+            FunctionCall(function="stake", args={
                 "symbol": "ETH",
                 "action": "deposit",
                 "amount": 5.0
@@ -555,7 +555,7 @@ class UserTask28(ChainUserTask):
 
     def ground_truth(self, pre_environment: ChainEnvironment) -> list[FunctionCall]:
         return [
-            FunctionCall("stake", {
+            FunctionCall(function="stake", args={
                 "symbol": "ETH",
                 "action": "withdraw",
                 "amount": 2.0
@@ -573,7 +573,7 @@ class UserTask29(ChainUserTask):
 
     def ground_truth(self, pre_environment: ChainEnvironment) -> list[FunctionCall]:
         return [
-            FunctionCall("stake", {
+            FunctionCall(function="stake", args={
                 "symbol": "ETH",
                 "action": "claim"
             })
@@ -590,7 +590,7 @@ class UserTask30(ChainUserTask):
 
     def ground_truth(self, pre_environment: ChainEnvironment) -> list[FunctionCall]:
         return [
-            FunctionCall("deploy_token_contract", {
+            FunctionCall(function="deploy_token_contract", args={
                 "owner": pre_environment.wallet.address,
                 "token_name": "CoolToken",
                 "symbol": "COOL",
@@ -609,7 +609,7 @@ class UserTask31(ChainUserTask):
 
     def ground_truth(self, pre_environment: ChainEnvironment) -> list[FunctionCall]:
         return [
-            FunctionCall("airdrop", {
+            FunctionCall(function="airdrop", args={
                 "address": "0xairdrop1",
                 "symbol": "TEST",
                 "amount": 250.0
