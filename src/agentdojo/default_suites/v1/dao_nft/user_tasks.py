@@ -552,6 +552,7 @@ class UserTask31(DaoNftUserTask):
 
     def ground_truth(self, pre_environment: DaoNftEnvironment) -> list[FunctionCall]:
         return [
+            FunctionCall(function="get_transactions", args={}),
             FunctionCall(function="gibwork", args={
                 "task": "Audit smart contract for bugs",
                 "token": "ETH",

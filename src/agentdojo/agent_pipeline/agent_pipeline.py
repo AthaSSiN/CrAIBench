@@ -30,6 +30,8 @@ class ModelsEnum(StrEnum):
 
     GPT_4O_2024_05_13 = "gpt-4o"
     """GPT-4o"""
+    O3_MINI = "o3-mini"
+    """O3 Mini"""
     GPT_4O_MINI_2024_07_18 = "gpt-4o-mini-2024-07-18"
     """GPT-4o Mini"""
     CLAUDE_3_7_SONNET = "claude-3-7-sonnet-20250219"
@@ -70,6 +72,7 @@ class ModelsEnum(StrEnum):
 MODEL_PROVIDERS = {
     ModelsEnum.GPT_4O_2024_05_13: "openai",
     ModelsEnum.GPT_4O_MINI_2024_07_18: "openai",
+    ModelsEnum.O3_MINI: "openai",
     ModelsEnum.CLAUDE_3_7_SONNET: "anthropic",
     ModelsEnum.GPT_3_5_TURBO_0125: "openai",
     ModelsEnum.GPT_4_0125_PREVIEW: "openai",

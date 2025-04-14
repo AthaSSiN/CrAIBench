@@ -124,6 +124,7 @@ class FixedJailbreakAttack(BaseAttack):
 model_names = {
     "gpt-4o": "GPT-4",
     "gpt-4o-mini-2024-07-18": "GPT-4",
+    "o3-mini": "O3 Mini",
     "claude-3-7-sonnet-20250219": "Claude 3.7 Sonnet",
     "gpt-3.5-turbo-0125": "GPT-3.5",
     "gpt-4-turbo-2024-04-09": "GPT-4",
